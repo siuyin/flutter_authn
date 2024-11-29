@@ -105,6 +105,16 @@ class _MyHomePageState extends State<MyHomePage> {
     await FirebaseAuth.instance.signOut();
   }
 
+  void sendPasswordResetEmail() async {
+    setState(() {
+      _userState =
+          'sending password reset instructions to ${emailController.text}';
+    });
+
+    await FirebaseAuth.instance
+        .sendPasswordResetEmail(email: emailController.text);
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -166,6 +176,9 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => signOut(),
               child: const Text('Sign out'),
             ),
+            TextButton(
+                onPressed: () => sendPasswordResetEmail(),
+                child: const Text('Send password reset email')),
           ],
         ),
       ),
