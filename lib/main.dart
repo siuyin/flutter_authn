@@ -181,26 +181,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: passwordController,
               ),
             ),
-            Visibility(
-              visible: _user == null,
-              child: ElevatedButton(
+            if (_user == null)
+              ElevatedButton(
                 onPressed: () => signIn(),
                 child: const Text('Sign in'),
               ),
-            ),
-            Visibility(
-              visible: _user != null,
-              child: ElevatedButton(
+            if (_user != null)
+              ElevatedButton(
                 onPressed: () => signOut(),
                 child: const Text('Sign out'),
               ),
-            ),
-            Visibility(
-              visible: _user == null,
-              child: TextButton(
+            if (_user == null)
+              TextButton(
                   onPressed: () => sendPasswordResetEmail(),
                   child: const Text('Send password reset email')),
-            ),
           ],
         ),
       ),
