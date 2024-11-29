@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Authentication',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Authentication Demo'),
     );
   }
 }
@@ -70,14 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        debugPrint('User is currently signed out!');
         setState(() {
-          _userState = "";
+          _userState = 'User is currently signed out';
         });
         return;
       }
-      debugPrint('User is signed in!');
-      debugPrint('user id: ${user.uid}, email: ${user.providerData[0].email}');
       setState(() {
         _userState =
             'user id: ${user.uid}, email: ${user.providerData[0].email}';
@@ -93,9 +90,13 @@ class _MyHomePageState extends State<MyHomePage> {
           email: emailController.text, password: passwordController.text);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        debugPrint('No user found for that email.');
+        setState(() {
+          _userState = 'No user found for that email.';
+        });
       } else if (e.code == 'wrong-password') {
-        debugPrint('Wrong password provided for that user.');
+        setState(() {
+          _userState = 'Wrong password provided for that user.';
+        });
       }
     }
   }
