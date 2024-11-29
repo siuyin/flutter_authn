@@ -169,16 +169,18 @@ class _MyHomePageState extends State<MyHomePage> {
             Text('user state: $_userState'),
             Visibility(
               visible: _user == null,
-              child: TextField(
-                decoration: const InputDecoration(hintText: 'email'),
-                controller: emailController,
-              ),
-            ),
-            Visibility(
-              visible: _user == null,
-              child: TextField(
-                decoration: const InputDecoration(hintText: 'password'),
-                controller: passwordController,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: const InputDecoration(hintText: 'email'),
+                    controller: emailController,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(hintText: 'password'),
+                    controller: passwordController,
+                  ),
+                ],
               ),
             ),
             if (_user == null)
