@@ -65,17 +65,21 @@ class _MyHomePageState extends State<MyHomePage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   String _userState = "";
+  User? _user;
 
   @override
   void initState() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         setState(() {
+          _user = null;
           _userState = 'User is currently signed out';
         });
         return;
       }
+
       setState(() {
+        _user = user;
         _userState =
             'user id: ${user.uid}, email: ${user.providerData[0].email}';
       });
@@ -91,10 +95,12 @@ class _MyHomePageState extends State<MyHomePage> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         setState(() {
+          _user = null;
           _userState = 'No user found for that email.';
         });
       } else if (e.code == 'wrong-password') {
         setState(() {
+          _user = null;
           _userState = 'Wrong password provided for that user.';
         });
       }
@@ -109,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _userState =
           'sending password reset instructions to ${emailController.text}';
+      _user = null;
     });
 
     await FirebaseAuth.instance
@@ -160,25 +167,40 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('user state: $_userState'),
-            TextField(
-              decoration: const InputDecoration(hintText: 'email'),
-              controller: emailController,
+            Visibility(
+              visible: _user == null,
+              child: TextField(
+                decoration: const InputDecoration(hintText: 'email'),
+                controller: emailController,
+              ),
             ),
-            TextField(
-              decoration: const InputDecoration(hintText: 'password'),
-              controller: passwordController,
+            Visibility(
+              visible: _user == null,
+              child: TextField(
+                decoration: const InputDecoration(hintText: 'password'),
+                controller: passwordController,
+              ),
             ),
-            ElevatedButton(
-              onPressed: () => signIn(),
-              child: const Text('Sign in'),
+            Visibility(
+              visible: _user == null,
+              child: ElevatedButton(
+                onPressed: () => signIn(),
+                child: const Text('Sign in'),
+              ),
             ),
-            ElevatedButton(
-              onPressed: () => signOut(),
-              child: const Text('Sign out'),
+            Visibility(
+              visible: _user != null,
+              child: ElevatedButton(
+                onPressed: () => signOut(),
+                child: const Text('Sign out'),
+              ),
             ),
-            TextButton(
-                onPressed: () => sendPasswordResetEmail(),
-                child: const Text('Send password reset email')),
+            Visibility(
+              visible: _user == null,
+              child: TextButton(
+                  onPressed: () => sendPasswordResetEmail(),
+                  child: const Text('Send password reset email')),
+            ),
           ],
         ),
       ),
